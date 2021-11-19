@@ -5,18 +5,5 @@
   with_items: "{{ cargo_items }}"
   register: cargo_result
   changed_when: false
+  failed_when: cargo_result.rc != 0
   when: item.name is defined
-
-- name: "Rust | Verify Cargo"
-  shell: "{{ fubarhouse_user_dir }}/.cargo/bin/cargo"
-  with_items: "{{ cargo_result.results }}"
-  changed_when: false
-  failed_when:
-    - ("use --force to override" not in item.stderr) and
-      ("Finished" not in item.stderr)
-
-- name: "Rust | Verify Binary installation"
-  stat:
-    path: "{{ fubarhouse_user_dir }}/.cargo/bin/{{ item.binary }}"
-  with_items: "{{ cargo_items }}"
-  when: item.binary is defined
